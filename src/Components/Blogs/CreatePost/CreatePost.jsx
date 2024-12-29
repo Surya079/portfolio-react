@@ -1,12 +1,25 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ArrowLeft } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import Quill's styles
 import { useNavigate } from "react-router-dom";
+import useMetaData from "../../../context/metaContext";
 
 const CreatePost = () => {
   const [editorContent, setEditorContent] = useState("");
   const navigate = useNavigate();
+  const { handleMetaData } = useMetaData();
+
+  useEffect(() => {
+    handleMetaData({
+      title: "Create a New Blog Post",
+      description:
+        "Share your knowledge and create a blog post for Surya's blog.",
+      keywords: "Create Blog, Blog Post, Web Development, Tutorials",
+      author: "surya.vme005@gmail.com",
+    });
+  }, []);
 
   const modules = {
     toolbar: [

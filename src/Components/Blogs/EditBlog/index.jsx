@@ -4,6 +4,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "tailwindcss/tailwind.css";
 import { useNavigate, useParams } from "react-router-dom";
+import useMetaData from "../../../context/metaContext";
 
 const EditBlogPage = () => {
   const [blogContent, setBlogContent] = useState("");
@@ -12,6 +13,17 @@ const EditBlogPage = () => {
 
   const { blogId } = useParams();
   const navigate = useNavigate();
+
+  const { handleMetaData } = useMetaData();
+
+  useEffect(() => {
+    handleMetaData({
+      title: `Edit Blog Post - ${blogId}`,
+      description: `Edit and update your blog post ${blogId}.`,
+      keywords: `Edit Blog, Update Blog, Web Development, Programming`,
+      author: "surya.vme005@gmail.com",
+    });
+  }, [blogId]);
 
   useEffect(() => {
     // Simulate fetching blog data

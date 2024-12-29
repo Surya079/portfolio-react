@@ -2,9 +2,16 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { solarizedLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import { Avatar, IconButton, Tooltip,  Button } from "@mui/material";
-import { ArrowLeft, Comment, Create, Share, ThumbUp } from "@mui/icons-material";
+import { Avatar, IconButton, Tooltip, Button } from "@mui/material";
+import {
+  ArrowLeft,
+  Comment,
+  Create,
+  Share,
+  ThumbUp,
+} from "@mui/icons-material";
 import CommentsSection from "../commentsModal/CommentsModal";
+import useMetaData from "../../../context/metaContext";
 
 const BlogDetailPage = () => {
   const [blogContent, setBlogContent] = useState(null);
@@ -13,7 +20,17 @@ const BlogDetailPage = () => {
 
   const { blogId } = useParams(); // Extract blog ID from URL
   const navigate = useNavigate();
+  const { handleMetaData } = useMetaData();
 
+  useEffect(() => {
+    // Fetch blog data based on blogId
+    handleMetaData({
+      title: `Blog Post - ${blogId}`,
+      description: `Detailed post for blog ${blogId} about web development and programming.`,
+      keywords: `Blog, Web Development, Programming, Tutorials`,
+      author: "surya.vme005@gmail.com",
+    });
+  }, [blogId]);
   useEffect(() => {
     // Simulate fetching blog data
     const fetchBlogData = async () => {

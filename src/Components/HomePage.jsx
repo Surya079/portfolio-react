@@ -3,11 +3,15 @@ import { motion } from "framer-motion";
 import Image from "/images/Surya (1).webp";
 import { TestimonialCard } from "./common/TestimonialCard";
 import { Link } from "react-router-dom";
+import { useAppSelector } from "../redux/authCustomHooks";
+import { selectAuth } from "../redux/slice/authSlice";
 
 const HomePage = () => {
   const titles = ["Surya", "Frontend Developer", "Backend Developer"];
   const [text, setText] = useState("");
   const [index, setIndex] = useState(0);
+  const { token } = useAppSelector(selectAuth);
+
   const [photoAcess, setPhotoAccess] = useState(false);
 
   useEffect(() => {
@@ -33,6 +37,11 @@ const HomePage = () => {
     }
   }, [text, index, titles]);
 
+  useEffect(() => {
+    if (token) {
+      setPhotoAccess(true);
+    }
+  }, []);
   return (
     <div>
       <div className="flex bg-slate-800 justify-center">

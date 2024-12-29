@@ -1,17 +1,30 @@
 import { Avatar, Menu, MenuItem, IconButton } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { clearUser } from "../../../redux/slice/authSlice";
 import { useSnackbar } from "../../../context/SnackbarContext";
+import useMetaData from "../../../context/metaContext";
 
 const UserProfilePage = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const dispatch = useDispatch();
+  const userId = useParams();
   const { handleShowSnackbar } = useSnackbar();
+
+  const { handleMetaData } = useMetaData();
+
+  useEffect(() => {
+    handleMetaData({
+      title: `Profile - ${userId}`,
+      description: `View the profile of ${userId}.`,
+      keywords: "Profile, User Profile, Blogs",
+      author: "surya.vme005@gmail.com",
+    });
+  }, [userId]);
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);

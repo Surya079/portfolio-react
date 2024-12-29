@@ -22,26 +22,24 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { ProductedRoute } from "./utils/ProductedRoutes";
 
+
 function App() {
   return (
     <BrowserRouter>
       <Layout>
         <ScrollToTop />
+
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} /> {/* Blogs Parent Route */}
+          <Route path="/about" element={<About />} />
+          {/* Blogs Parent Route */}
           <Route path="/blogs/" element={<Outlet />}>
             {/* Public Routes */}
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
 
             {/* Protected Routes */}
-            <Route
-              element={
-                <ProductedRoute>
-                  <Outlet />
-                </ProductedRoute>
-              }>
+            <Route element={<ProductedRoute />}>
               <Route index element={<Blogs />} />
               <Route path=":id" element={<BlogDetailPage />} />
               <Route path="create-blog" element={<CreatePost />} />

@@ -32,7 +32,7 @@ export const authSlice = createSlice({
       state.email = "";
       state.occupation = "";
       state.role = "";
-      state.isVerified;
+      state.isVerified = "";
     },
   },
 });
