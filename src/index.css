@@ -1,0 +1,180 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+:root {
+  /* Base Colors */
+  --white: #ffffff; /* Background or section backgrounds */
+  --dark-gray: #333333; /* Primary text color */
+  --light-gray: #f5f5f5; /* Secondary background or card background */
+  --blue: #007bff; /* Accent color for buttons, links, etc. */
+  --teal: #20c997; /* Alternative accent color for highlights */
+
+  /* Additional States */
+  --blue-hover: #0056b3; /* Hover effect for blue buttons/links */
+  --teal-hover: #138c7e; /* Hover effect for teal buttons/links */
+  --border-gray: #dcdcdc; /* Light border color */
+}
+
+body {
+  margin: 0;
+  font-family: "Arial", sans-serif;
+  background-color: var(--white); /* Set white as the main background */
+  color: var(--dark-gray); /* Set dark gray as default text color */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--dark-gray); /* Headings in dark gray */
+}
+
+p,
+li {
+  color: var(--dark-gray); /* Paragraph and list text in dark gray */
+}
+
+a {
+  color: var(--blue); /* Links in blue */
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--blue-hover); /* Link hover effect */
+}
+
+button:hover {
+  background-color: var(--blue-hover); /* Button hover effect */
+}
+
+.secondary-button {
+  background-color: var(--teal); /* Secondary button in teal */
+  color: var(--white);
+}
+
+.secondary-button:hover {
+  background-color: var(--teal-hover); /* Hover effect for teal buttons */
+}
+
+.card {
+  background-image: linear-gradient(
+    to bottom right,
+    rgb(13, 24, 45),
+    rgb(43, 65, 94)
+  ); /* Card background in light gray gradient */
+  border: 1px solid var(--border-gray);
+  padding: 20px;
+  color: var(--white);
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+  background-color: var(--dark-gray); /* Footer background in dark gray */
+  color: var(--white); /* Footer text in white */
+  padding: 20px;
+  text-align: center;
+}
+
+.intro-bg {
+  background: var("/images/Surya-bg.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+@layer utilities {
+  .card-wrapper {
+    @apply relative bg-gradient-to-b to-slate-800 overflow-hidden rounded-md;
+  }
+
+  .card-wrapper::before {
+    background: conic-gradient(
+      rgba(41, 5, 245, 0.938) 0deg,
+      rgb(0, 144, 254) 0deg,
+      transparent 80deg
+    );
+    @apply absolute h-[150%] w-[150%] content-[""] left-[-25%] top-[-25%] shadow-lg motion-preset-spin motion-duration-2000;
+  }
+
+  .card-content {
+    @apply absolute w-[calc(100%-5px)] h-[calc(100%-5px)] top-[2px] left-[2px]
+       bg-gradient-to-b from-slate-700 to-slate-900 rounded-md;
+  }
+
+  .button {
+    @apply bg-gradient-to-r from-cyan-400 to-cyan-400 hover:text-white text-white font-bold py-1 px-3 text-[12px] rounded;
+  }
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: currentColor;
+  }
+}
+
+.create-post {
+  width: 50%;
+  margin: auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.toolbar {
+  margin-bottom: 20px;
+}
+
+.editor-container {
+  border: 1px solid #ccc;
+  min-height: 300px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+button {
+  margin-right: 10px;
+}
+
+.post-page {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.post-content {
+  padding: 10px;
+}
+
+pre {
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-radius: 5px;
+  font-family: "Courier New", Courier, monospace;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+code {
+  font-size: 14px;
+}
