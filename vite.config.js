@@ -7,6 +7,7 @@ export default defineConfig({
   server: {
     port: 3005,
   },
+  base: "./",
   css: {
     postcss: "./postcss.config.js",
   },
@@ -15,5 +16,4 @@ export default defineConfig({
       global: "node-libs-browser/mock/global",
     },
   },
- 
 });
