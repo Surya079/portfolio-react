@@ -160,7 +160,7 @@ const BlogPage = () => {
             <img
               src={
                 token && user.profilePhoto
-                  ? `${import.meta.env.VITE_BASE_URL + "/" + user.profilePhoto}`
+                  ? `${import.meta.env.VITE_BASE_URL}/${user.profilePhoto}`
                   : "/images/demo-profile.png"
               }
               alt="your profile"

@@ -73,7 +73,7 @@ export const ProjectsCard = ({ id, name, description, link, image, like }) => {
       <div className="flex  justify-start">
         <div className="w-[340px] h-[200px] ">
           <img
-            src={`${import.meta.env.VITE_BASE_URL}/` + image}
+            src={`${import.meta.env.VITE_BASE_URL}/${image}`}
             className="object-contain w-full h-full"
           />
         </div>
