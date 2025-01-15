@@ -54,10 +54,11 @@ const LoginBox = () => {
             setUser({
               token: response.data.token,
               username: response.data.current_user.username,
-              email: response.data.current_user.email,
               occupation: response.data.current_user.occupation,
               role: response.data.current_user.role,
               isVerified: response.data.current_user.isVerified,
+              userId: response.data.current_user.user_id,
+              profilePicture: response.data.current_user.profilePicture,
             })
           );
         }
@@ -101,7 +102,11 @@ const LoginBox = () => {
         className="flex flex-col gap-3">
         <TextField
           fullWidth
-          label="Email"
+          label={
+            <span>
+              Email <span style={{ color: "red" }}>*</span>
+            </span>
+          }
           name="email"
           type="email"
           value={formValues.email}
@@ -112,7 +117,11 @@ const LoginBox = () => {
 
         <TextField
           fullWidth
-          label="Password"
+          label={
+            <span>
+              Password <span style={{ color: "red" }}>*</span>
+            </span>
+          }
           name="password"
           type="password"
           value={formValues.password}

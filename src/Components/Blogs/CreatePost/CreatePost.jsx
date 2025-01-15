@@ -5,11 +5,16 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import Quill's styles
 import { useNavigate } from "react-router-dom";
 import useMetaData from "../../../context/metaContext";
+import { TextField } from "@mui/material";
+// import { useSnackbar } from "../../../context/SnackbarContext";
+// import axios from "axios";
 
 const CreatePost = () => {
   const [editorContent, setEditorContent] = useState("");
+  const [title, setTitle] = useState("");
   const navigate = useNavigate();
   const { handleMetaData } = useMetaData();
+  // const { handleShowSnackbar } = useSnackbar();
 
   useEffect(() => {
     handleMetaData({
@@ -50,6 +55,14 @@ const CreatePost = () => {
     "code-block",
   ];
 
+  const handlePublish = async () => {
+    // try {
+    //   const response = await axios.post(`${import.meta.env.VITE_BASE_URL}${}`)
+    // } catch (error) {
+    //   handleShowSnackbar(error.response.data.message, "error");
+    // }
+  };
+
   return (
     <div className="mt-5">
       <div className="flex justify-between px-3 py-2 items-center">
@@ -66,12 +79,20 @@ const CreatePost = () => {
           </div>
         </div>
         {/* Publish button */}
-        <button
-          className="button my-2"
-          onClick={() => console.log("Post saved!")}>
+        <button className="button my-2" onClick={handlePublish}>
           Publish
         </button>
       </div>
+
+      {/* Render the title input field */}
+      <TextField
+        label="Title"
+        variant="outlined"
+        fullWidth
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        className="my-2"
+      />
 
       {/* Render the Quill Editor */}
       <ReactQuill

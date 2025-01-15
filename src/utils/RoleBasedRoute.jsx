@@ -8,12 +8,12 @@ import axios from "axios";
 import { API_URLS } from "../data/api-urls";
 import SkeletonLoader from "../Components/SkeletonLoading/SkeletonLoad";
 
-export const ProductedRoute = ({ children }) => {
+export const RoleBasedRoute = ({ children, requiredRole }) => {
   const [user, setUser] = useState();
   const { handleShowSnackbar } = useSnackbar();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
-  const { token } = useAppSelector(selectAuth);
+  const { token, role } = useAppSelector(selectAuth);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -47,6 +47,9 @@ export const ProductedRoute = ({ children }) => {
     }
   }, [error]);
 
+  if (!requiredRole.includes(role)) {
+    return <Navigate to={"/unauthorized"} />;
+  }
   if (isLoading) {
     return (
       <div className="mt-6">

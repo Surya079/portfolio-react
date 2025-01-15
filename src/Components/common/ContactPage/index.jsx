@@ -1,6 +1,11 @@
-import { Box, Button, MenuItem, TextField } from "@mui/material";
+import { Box, MenuItem, TextField } from "@mui/material";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useAppSelector } from "../../../redux/authCustomHooks";
+import { selectAuth } from "../../../redux/slice/authSlice";
+import { useSnackbar } from "../../../context/SnackbarContext";
+import axios from "axios";
+import { API_URLS } from "../../../data/api-urls";
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -9,14 +14,41 @@ const ContactPage = () => {
     reason: "",
     message: "",
   });
-
+  const { token } = useAppSelector(selectAuth);
+  const { handleShowSnackbar } = useSnackbar();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Submitted", formData); // Replace with your API or backend logic
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}${API_URLS.getContact}`,
+        {
+          name: formData.name,
+          email: formData.email,
+          reason: formData.reason,
+          message: formData.message,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status == 200) {
+        handleShowSnackbar(response.data.message, "success");
+        setFormData({
+          name: "",
+          email: "",
+          reason: "",
+          message: "",
+        });
+      }
+    } catch (error) {
+      handleShowSnackbar(error.response.data.message, "error");
+    }
   };
   return (
     <div className="bg-slate-100  pb-5">
@@ -57,18 +89,25 @@ const ContactPage = () => {
             borderRadius: 2,
           }}>
           <TextField
-            label="Name"
+            label={
+              <span>
+                Name <span className="text-red-600">*</span>
+              </span>
+            }
             name="name"
             variant="standard"
             fullWidth
             margin="normal"
             value={formData.name}
             onChange={handleChange}
-            required
           />
 
           <TextField
-            label="Email"
+            label={
+              <span>
+                Email <span className="text-red-600">*</span>
+              </span>
+            }
             name="email"
             type="email"
             variant="standard"
@@ -76,19 +115,21 @@ const ContactPage = () => {
             margin="normal"
             value={formData.email}
             onChange={handleChange}
-            required
           />
 
           <TextField
             select
-            label="Reason for Contacting"
+            label={
+              <span>
+                Reason for Contacting <span className="text-red-600">*</span>
+              </span>
+            }
             name="reason"
             variant="standard"
             value={formData.reason}
             onChange={handleChange}
             fullWidth
-            margin="normal"
-            required>
+            margin="normal">
             <MenuItem value="" disabled>
               Select an option
             </MenuItem>
@@ -100,7 +141,11 @@ const ContactPage = () => {
           </TextField>
 
           <TextField
-            label="Message"
+            label={
+              <span>
+                Message <span className="text-red-600">*</span>
+              </span>
+            }
             name="message"
             multiline
             rows={4}
@@ -109,17 +154,11 @@ const ContactPage = () => {
             margin="normal"
             value={formData.message}
             onChange={handleChange}
-            required
           />
 
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 2 }}>
+          <button type="submit"  className="button w-full text-black">
             Submit
-          </Button>
+          </button>
         </Box>
       </div>
       <div className="w-full h-36 pb-10 pt-8 mt-4 text-center flex flex-col justify-center items-center">

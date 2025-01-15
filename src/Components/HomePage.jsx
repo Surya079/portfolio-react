@@ -5,12 +5,25 @@ import { TestimonialCard } from "./common/TestimonialCard";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../redux/authCustomHooks";
 import { selectAuth } from "../redux/slice/authSlice";
+import ReviewSection from "./common/ReviewPage";
+import AddTestimonial from "./AddTestimonila";
+import { useSnackbar } from "../context/SnackbarContext";
 
 const HomePage = () => {
   const titles = ["Surya", "Frontend Developer", "Backend Developer"];
   const [text, setText] = useState("");
   const [index, setIndex] = useState(0);
   const { token } = useAppSelector(selectAuth);
+  const [isTestimonialOpen, setIsTestimonialOpen] = useState(false);
+  const { handleShowSnackbar } = useSnackbar();
+
+  const handleOpen = () => {
+    if (!token) {
+      handleShowSnackbar("Please Request you to Login/Register!", "warning");
+    } else {
+      setIsTestimonialOpen(true);
+    }
+  };
 
   const [photoAcess, setPhotoAccess] = useState(false);
 
@@ -100,7 +113,7 @@ const HomePage = () => {
               <img
                 src={Image}
                 alt="Example"
-                className={`transition hover:scale-[1.2] rounded-md ${
+                className={`transition hover:scale-[1.2] pointer-events-none rounded-md ${
                   photoAcess ? "blur-none" : "blur-md"
                 }`}
               />
@@ -114,13 +127,30 @@ const HomePage = () => {
         </div>
       </div>
       <div className="bg-slate-800 py-6">
-        <h2 className="text-2xl md:text-5xl text-white pb-5  text-center font-bold">
-          Testimonials By Real Peoples
-        </h2>
+        <div className="flex flex-col items-center">
+          <h2 className="text-2xl md:text-5xl text-white pb-5  text-center font-bold">
+            Testimonials
+          </h2>
+          <button className="button w-fit" onClick={handleOpen}>
+            Give a Testimoninal
+          </button>
+          <div className="py-2">
+            <p className="text-center  text-yellow-100 text-sm md:text-sm text-[8px] px-5">
+              <b className="text-sky-500">Note:</b> Please note that it will be
+              published on the website after our approval. After approval, You
+              can see testimonials bellow!
+            </p>
+          </div>
+        </div>
         <div>
           <TestimonialCard />
         </div>
       </div>
+      <ReviewSection />
+      <AddTestimonial
+        open={isTestimonialOpen}
+        handleClose={() => setIsTestimonialOpen(false)}
+      />
     </div>
   );
 };

@@ -3,9 +3,9 @@ import { RootState } from "../store";
 
 const initialState = {
   token: "", // Authentication token
-  // User information
+  userId: "",
+  profilePicture: "",
   username: "",
-  email: "",
   occupation: "",
   role: "", // Role of the user
   isVerified: "", // Email verification status
@@ -16,23 +16,32 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const { token, username, email, occupation, role, isVerified } =
-        action.payload;
+      const {
+        token,
+        username,
+        userId,
+        profilePicture,
+        occupation,
+        role,
+        isVerified,
+      } = action.payload;
 
       state.token = token;
       state.username = username;
-      state.email = email;
       state.occupation = occupation;
       state.role = role;
       state.isVerified = isVerified;
+      state.userId = userId;
+      state.profilePicture = profilePicture;
     },
     clearUser: (state) => {
       state.token = "";
       state.username = "";
-      state.email = "";
       state.occupation = "";
       state.role = "";
       state.isVerified = "";
+      state.userId = "";
+      state.profilePicture = "";
     },
   },
 });

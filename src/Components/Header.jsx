@@ -5,10 +5,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import useMobileView from "../customHooks/useMobileView";
 import { Link } from "react-router-dom";
 
+
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const isMobile = useMobileView();
-
+ 
   const handleOpenMenu = () => {
     setMenuOpen(!menuOpen);
   };
@@ -18,7 +19,9 @@ const Header = () => {
       <div className="flex flex-row justify-between items-center">
         {/* Logo Section */}
         <div className="text-xl  font-bold">
-          <Link to="/" className="text-white flex flex-row items-center gap-2 hover:text-white">
+          <Link
+            to="/"
+            className="text-white flex flex-row items-center gap-2 hover:text-white">
             <div className="w-[50px] h-[50px] rounded-full bg-slate-100 flex flex-col items-center justify-center overflow-hidden">
               <img src="/images/logo.png" alt="logo" width={40} className=" " />
             </div>
@@ -37,7 +40,7 @@ const Header = () => {
               <Navbar
                 container={`flex flex-col items-start text-lg gap-3 justify-center items-center transition-transform transform duration-300 ease-in-out ${
                   menuOpen ? "translate-x-0" : "translate-x-full"
-                } absolute p-6 top-[57px] bg-gradient-to-t from-slate-700 to-slate-900 right-0 w-[200px] h-[300px] shadow-lg`}
+                } absolute p-6 top-[57px] bg-gradient-to-t from-slate-700 to-slate-900 right-0 w-[200px] h-fit shadow-lg`}
               />
               {/* Menu Toggle Icons */}
               <div className="text-2xl text-white cursor-pointer">

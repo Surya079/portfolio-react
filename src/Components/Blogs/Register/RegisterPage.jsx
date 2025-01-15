@@ -106,28 +106,44 @@ const RegisterBox = () => {
         flex flex-col gap-2">
           <TextField
             fullWidth
-            label="Name"
+            label={
+              <span>
+                Name <span style={{ color: "red" }}>*</span>
+              </span>
+            }
             name="name"
             value={formValues.username}
             onChange={handleChange}
             error={!!errors.username}
             helperText={errors.username}
           />
+          <div>
+            <TextField
+              fullWidth
+              label={
+                <span>
+                  Email <span style={{ color: "red" }}>*</span>
+                </span>
+              }
+              name="email"
+              type="email"
+              value={formValues.email}
+              onChange={handleChange}
+              error={!!errors.email}
+              helperText={errors.email}
+            />
+            <span className="text-[10px] text-blue-600 ml-3 ">
+              You should verify your email by OTP
+            </span>
+          </div>
 
           <TextField
             fullWidth
-            label="Email"
-            name="email"
-            type="email"
-            value={formValues.email}
-            onChange={handleChange}
-            error={!!errors.email}
-            helperText={errors.email}
-          />
-
-          <TextField
-            fullWidth
-            label="Password"
+            label={
+              <span>
+                Password <span style={{ color: "red" }}>*</span>
+              </span>
+            }
             name="password"
             type="password"
             value={formValues.password}
@@ -138,7 +154,11 @@ const RegisterBox = () => {
 
           <TextField
             fullWidth
-            label="Occupation"
+            label={
+              <span>
+                Occupation <span style={{ color: "red" }}>*</span>
+              </span>
+            }
             name="occupation"
             value={formValues.occupation}
             error={!!errors.occupation}

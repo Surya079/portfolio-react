@@ -121,6 +121,7 @@ const EditServicePage = () => {
               zIndex: 1,
               opacity: 0.8, // Adjust visibility
             }}
+            className="pointer-events-none"
           />
 
           {/* Edited Image */}
@@ -130,6 +131,7 @@ const EditServicePage = () => {
             alt="After Edit"
             sx={{
               position: "absolute",
+              pointerEvents: "none",
               top: 0,
               left: 0,
               width: "100%",
@@ -243,6 +245,7 @@ const EditServicePage = () => {
               height: "100%",
               objectFit: "cover",
               objectPosition: "center",
+              pointerEvents:"none"
             }}
           />
           <Box

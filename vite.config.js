@@ -7,13 +7,12 @@ export default defineConfig({
   server: {
     port: 3005,
   },
+  define: {
+    "process.env": {},
+  },
   base: "./",
   css: {
     postcss: "./postcss.config.js",
   },
-  resolve: {
-    alias: {
-      global: "node-libs-browser/mock/global",
-    },
-  },
+  
 });

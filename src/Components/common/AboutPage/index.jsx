@@ -2,11 +2,14 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Divider } from "@mui/material";
+import { useAppSelector } from "../../../redux/authCustomHooks";
+import { selectAuth } from "../../../redux/slice/authSlice";
 
 const AboutPage = () => {
-  const [photoAcess, setPhotoAccess] = useState(false);
   const [text, setText] = useState("");
   const [index, setIndex] = useState(0);
+
+  const {token} = useAppSelector(selectAuth)
 
   return (
     <div>
@@ -56,11 +59,11 @@ const AboutPage = () => {
                 <img
                   src={"/images/Surya-profile.jpg"}
                   alt="Example"
-                  className={`transition hover:scale-[1.2] rounded-md ${
-                    photoAcess ? "blur-none" : "blur-md"
+                  className={`transition hover:scale-[1.2] pointer-events-none rounded-md ${
+                    token ? "blur-none" : "blur-md"
                   }`}
                 />
-                {!photoAcess && (
+                {!token && (
                   <Link to={"/blogs"} className="absolute text-white button">
                     Go to blog & <br /> Login to View
                   </Link>

@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { Suspense, useEffect } from "react";
-
 import SkeletonLoader from "../Components/SkeletonLoading/SkeletonLoad";
-import  useMetaData  from "../context/metaContext";
+import useMetaData from "../context/metaContext";
 const PostPage = React.lazy(() => import("../Components/Blogs/BlogPage"));
 
 const Blogs = () => {
@@ -10,17 +9,16 @@ const Blogs = () => {
 
   useEffect(() => {
     handleMetaData({
-      title: "Surya's Blogs",
+      title: "Blogs - Surya's Portfolio",
       description:
-        "Read Surya's latest thoughts, tutorials, and technical articles.",
-      keywords: "Blogs, Tutorials, Articles, Web Development",
+        "Explore the blogs by Surya, covering various topics in web development, technology, and more.",
+      keywords: "Blogs, Surya, Portfolio, Web Development, Technology, Coding",
       author: "surya.vme005@gmail.com",
     });
   }, []);
   return (
     <Suspense fallback={<SkeletonLoader variant={"blogs"} />}>
       <PostPage />
-      {/* Pass rawContent to PostPage */}
     </Suspense>
   );
 };

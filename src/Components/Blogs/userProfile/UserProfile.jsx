@@ -3,24 +3,31 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { clearUser } from "../../../redux/slice/authSlice";
+import { clearUser, selectAuth } from "../../../redux/slice/authSlice";
 import { useSnackbar } from "../../../context/SnackbarContext";
 import useMetaData from "../../../context/metaContext";
+import { useAppSelector } from "../../../redux/authCustomHooks";
+import axios from "axios";
+import { API_URLS } from "../../../data/api-urls";
+import SkeletonLoader from "../../SkeletonLoading/SkeletonLoad";
 
 const UserProfilePage = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const dispatch = useDispatch();
-  const userId = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const { token, userId, username } = useAppSelector(selectAuth);
+  const userID = useParams().id;
+
   const { handleShowSnackbar } = useSnackbar();
 
   const { handleMetaData } = useMetaData();
 
   useEffect(() => {
     handleMetaData({
-      title: `Profile - ${userId}`,
-      description: `View the profile of ${userId}.`,
+      title: `Profile - ${username}`,
+      description: `View the profile of ${username}.`,
       keywords: "Profile, User Profile, Blogs",
       author: "surya.vme005@gmail.com",
     });
@@ -59,27 +66,54 @@ const UserProfilePage = () => {
 
   // Dynamic Data (replace with API data if needed)
   const [user, setUser] = useState({
-    id: 1,
-    name: "John Doe",
-    avatar: "https://via.placeholder.com/150",
-    joinedDate: "January 2022",
-    about:
-      "Hello! I’m John Doe, a passionate writer and movie enthusiast. I love sharing my thoughts and experiences through blogging.",
-    blogs: [
-      {
-        id: 1,
-        title: "My Experience Watching 'The Grand Adventure'",
-        link: "/blog/123",
-      },
-      {
-        id: 2,
-        title: "Exploring the Best Coffee Spots in Town",
-        link: "/blog/coffee-spots",
-      },
-    ],
+    name: "",
+    email: "",
+    isVerified: "",
+    profilePhoto: "",
+    occupation: "",
+    joined: "",
+    about: "",
   });
 
-  return (
+  const handleFetchUserData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}${API_URLS.getUserDetails}/${userID}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setIsLoading(false);
+        setUser({
+          name: response.data.userDetails.name,
+          email: response.data.userDetails.email,
+          isVerified: response.data.userDetails.isVerified,
+          profilePhoto: response.data.userDetails.profilePicture,
+          occupation: response.data.userDetails.occupation,
+          joinedDate: response.data.userDetails.createdAt,
+          about: response.data.userDetails.aboutMe,
+        });
+      }
+      console.log(response.data);
+    } catch (error) {
+      handleShowSnackbar(error.response.data.message, "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleFetchUserData();
+  }, [userID]);
+
+
+  return isLoading ? (
+    <SkeletonLoader variant={"content"} />
+  ) : (
     <div className="min-h-screen bg-gradient-to-r from-blue-100 to-blue-50 p-4 flex items-center justify-center">
       <div className="max-w-4xl w-full bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Header Section */}
@@ -87,59 +121,61 @@ const UserProfilePage = () => {
           <div className="flex items-center">
             <Avatar
               alt={user.name}
-              src={user.avatar}
+              src={
+                user.profilePhoto
+                  ? `${import.meta.env.VITE_BASE_URL}/${user.profilePhoto}`
+                  : "/images/demo-profile.png"
+              }
               sx={{ width: 80, height: 80 }}
             />
             <div className="ml-4">
               <h1 className="text-2xl font-bold">{user.name}</h1>
-              <p className="text-sm">Joined: {user.joinedDate}</p>
+              <p className="text-sm">
+                Joined: {new Date(user.joinedDate).toDateString()}
+              </p>
             </div>
           </div>
-          <div>
-            <IconButton
-              aria-controls="simple-menu"
-              aria-haspopup="true"
-              onClick={handleMenuClick}
-              color="inherit">
-              <MoreVertIcon />
-            </IconButton>
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={open}
-              onClose={handleMenuClose}>
-              <MenuItem onClick={handleEditProfile}>Edit Profile</MenuItem>
-              <MenuItem onClick={handleSettings}>Settings</MenuItem>
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
-            </Menu>
-          </div>
+          {token && userID === userId ? (
+            <div>
+              <IconButton
+                aria-controls="simple-menu"
+                aria-haspopup="true"
+                onClick={handleMenuClick}
+                color="inherit">
+                <MoreVertIcon />
+              </IconButton>
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={open}
+                onClose={handleMenuClose}>
+                <MenuItem onClick={handleEditProfile}>Edit Profile</MenuItem>
+                <MenuItem onClick={handleSettings}>Settings</MenuItem>
+                <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              </Menu>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
 
         {/* Main Content */}
         <div className="p-6 space-y-6">
           {/* About Me Section */}
           <div>
-            <h2 className="text-lg font-bold mb-2">About Me</h2>
-            <p className="text-gray-700">{user.about}</p>
+            <h2 className="text-lg font-bold mb-2">About {user.name}</h2>
+            <p className="text-gray-700">
+              {user.about ? (
+                user.about
+              ) : (
+                <div className="text-gray-400">Not Specified</div>
+              )}
+            </p>
           </div>
-
-          {/* Blog Posts Section */}
           <div>
-            <h2 className="text-lg font-bold mb-2">My Blogs</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {user.blogs.map((blog, index) => (
-                <div
-                  onClick={() => navigate(`/blogs/${blog.id}`)}
-                  key={index}
-                  className="block bg-gray-100 cursor-pointer hover:bg-gray-200 transition p-4 rounded shadow">
-                  <h3 className="font-bold text-blue-600">{blog.title}</h3>
-                  <p className="text-sm text-gray-600">
-                    Click to read this blog.
-                  </p>
-                </div>
-              ))}
-            </div>
+            <h2 className="text-lg font-bold mb-2">Occupation </h2>
+            <p className="text-gray-700">{user.occupation}</p>
           </div>
         </div>
       </div>

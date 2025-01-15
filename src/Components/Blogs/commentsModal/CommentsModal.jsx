@@ -1,110 +1,198 @@
 /* eslint-disable react/prop-types */
-import { TextField, Typography, Avatar, IconButton } from "@mui/material";
-import { ThumbUp } from "@mui/icons-material";
-import { useState } from "react";
+import { TextField, Typography, Avatar } from "@mui/material";
+import { useCallback, useEffect, useState } from "react";
 import SendIcon from "@mui/icons-material/Send";
-
-// Dummy comments data
-const dummyComments = [
-  {
-    id: 1,
-    user: "John Doe",
-    profilePic: "https://via.placeholder.com/40",
-    text: "This is a great post!",
-    timestamp: "2024-12-24 10:00 AM",
-    likes: 2,
-  },
-  {
-    id: 2,
-    user: "Jane Smith",
-    profilePic: "https://via.placeholder.com/40",
-    text: "Very insightful, thank you for sharing.",
-    timestamp: "2024-12-24 10:30 AM",
-    likes: 5,
-  },
-  {
-    id: 3,
-    user: "Anonymous",
-    profilePic: "https://via.placeholder.com/40",
-    text: "I totally agree with this point.",
-    timestamp: "2024-12-24 11:00 AM",
-    likes: 1,
-  },
-];
+import { useSnackbar } from "../../../context/SnackbarContext";
+import { API_URLS } from "../../../data/api-urls";
+import { useAppSelector } from "../../../redux/authCustomHooks";
+import { selectAuth } from "../../../redux/slice/authSlice";
+import axios from "axios";
+import SkeletonLoader from "../../SkeletonLoading/SkeletonLoad";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 // CommentsSection Component
-const CommentsSection = ({ open }) => {
-  const [comments, setComments] = useState(dummyComments);
+const CommentsSection = ({ open, id }) => {
+  const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+  const [isdeleted, setIsdeleted] = useState(false);
+  const [deletedId, setdeletedId] = useState("");
+  const { handleShowSnackbar } = useSnackbar();
+  const [isLoading, setIsLoading] = useState(false);
+  const { token, userId, username } = useAppSelector(selectAuth);
 
-  const handleAddComment = () => {
-    const newCommentObj = {
-      id: comments.length + 1,
-      user: "Anonymous",
-      profilePic: "https://via.placeholder.com/40", // Default profile pic
-      text: newComment,
-      timestamp: new Date().toLocaleString(), // Includes date and time
-      likes: 0, // Initialize with 0 likes
-    };
-    setComments([...comments, newCommentObj]); // Add the new comment
-    setNewComment(""); // Reset the input field
-  };
+  // Memoize the fetchBlogs function
+  const fetchBlogComments = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}${API_URLS.getAllBlogComments}/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-  const handleLike = (id) => {
-    setComments((prevComments) =>
-      prevComments.map((comment) =>
-        comment.id === id ? { ...comment, likes: comment.likes + 1 } : comment
-      )
-    );
+      if (response.status === 200) {
+        setIsLoading(false);
+        setComments(response.data.comments);
+      }
+    } catch (error) {
+      handleShowSnackbar(
+        error.response?.data?.message || "Error occurred",
+        "error"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // useEffect with the dependency array
+  useEffect(() => {
+    if (token) fetchBlogComments();
+  }, [fetchBlogComments, token, id]);
+
+  const handleAddComment = async () => {
+    setComments((prevComments) => [
+      ...prevComments,
+      { comment: newComment, userId: { name: username } },
+    ]);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}${API_URLS.addComments}`,
+        {
+          blogId: id,
+          userId: userId,
+          comment: newComment,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 201) {
+        setNewComment(""); // Reset the input field
+      }
+    } catch (error) {
+      handleShowSnackbar(error.response.data.message, "error");
+    }
   };
 
   if (!open) {
     return null;
   }
 
-  return (
+  const handleDelete = async (commentId) => {
+    try {
+      const blogId = id;
+      const response = await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}${
+          API_URLS.deleteComment
+        }/${blogId}/${commentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setIsdeleted(true);
+        setdeletedId(commentId);
+        handleShowSnackbar(response.data.message, "success");
+      }
+    } catch (error) {
+      handleShowSnackbar(error.response.data.message, "error");
+    }
+  };
+
+  return isLoading ? (
+    <SkeletonLoader variant={"content"} />
+  ) : (
     <div className="mt-4 bg-gray-100 p-4 rounded-md">
       <Typography variant="h6" className="font-bold mb-4">
         Comments
       </Typography>
-      {comments.map((comment) => (
-        <div
-          key={comment.id}
-          className="mb-4 flex items-start gap-3 p-2 bg-white rounded-md shadow-sm">
-          {/* Profile Picture */}
-          <Avatar
-            src={comment.profilePic || "https://via.placeholder.com/40"}
-            alt={comment.user}
-            sx={{ width: 40, height: 40 }}
-          />
+      {comments ? (
+        comments?.map((comment) => (
+          <div
+            key={comment._id}
+            className="mb-4 flex items-start  flex-col p-2 bg-white rounded-md shadow-sm"
+            style={{
+              display:
+                isdeleted && deletedId === comment._id ? "none" : "block",
+            }}>
+            {/* Profile Picture */}
+            {userId === comment?.userId?._id ? (
+              <div className="flex gap-2 w-full justify-end">
+                {/* <div
+                  onClick={() => handleEdit(comment?._id)}
+                  className="cursor-pointer border border-gray-300">
+                  <EditIcon fontSize="small" />
+                </div> */}
+                <div
+                  onClick={() => handleDelete(comment?._id)}
+                  className="cursor-pointer border border-gray-300">
+                  <DeleteIcon fontSize="small" />
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
+            <div className="flex w-full items-start gap-3 p-2 ">
+              <Avatar
+                src={
+                  comment?.userId?.profilePicture
+                    ? `${import.meta.env.VITE_BASE_URL}${
+                        comment?.userId?.profilePicture
+                      }`
+                    : "/images/demo-profile.png"
+                }
+                alt="Profile Picture"
+                sx={{ width: 30, height: 30 }}
+              />
 
-          {/* User Info and Comment */}
-          <div style={{ flex: 1 }}>
-            <Typography variant="subtitle2" className="font-semibold">
-              {comment.user}
-            </Typography>
-            <Typography variant="caption" className="text-gray-500 block mb-1">
-              {comment.timestamp}
-            </Typography>
-            <Typography
-              variant="body2"
-              className="ml-1"
-              sx={{ whiteSpace: "pre-wrap" }}>
-              {comment.text}
-            </Typography>
-            {/* Like Button */}
-            <div className="mt-2 flex items-center gap-2">
-              <IconButton
-                size="small"
-                color="primary"
-                onClick={() => handleLike(comment.id)}>
-                <ThumbUp fontSize="small" />
-              </IconButton>
-              <Typography variant="caption">{comment.likes}</Typography>
+              {/* User Info and Comment */}
+              <div style={{ flex: 1 }}>
+                <div className="font-semibold text-[13px]">
+                  {comment.userId?.name || username}
+                </div>
+                <div className="text-gray-500 block mb-1 text-[8px]">
+                  {comment?.timestamp
+                    ? (() => {
+                        const commentDate = new Date(comment?.timestamp);
+                        const currentDate = new Date();
+                        const timeDifference = currentDate - commentDate;
+                        const daysDifference = Math.floor(
+                          timeDifference / (1000 * 60 * 60 * 24)
+                        );
+
+                        if (daysDifference === 0) {
+                          return commentDate.toDateString();
+                        } else if (daysDifference === 1) {
+                          return "1 day ago";
+                        } else if (daysDifference > 1) {
+                          return `${daysDifference} days ago`;
+                        } else {
+                          return commentDate.toDateString();
+                        }
+                      })()
+                    : "Just now"}
+                </div>
+                <Typography
+                  variant="body2"
+                  className="ml-1 bg-gray-400/5 shadow-md rounded-md  w-full p-5"
+                  sx={{ whiteSpace: "pre-wrap" }}>
+                  {comment ? comment?.comment : newComment}
+                </Typography>
+                {/* Like Button */}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        ))
+      ) : (
+        <div>No Comments Found</div>
+      )}
       {/* Add Comment Section */}
       <div className="flex items-center gap-2">
         <TextField

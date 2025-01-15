@@ -178,3 +178,38 @@ pre {
 code {
   font-size: 14px;
 }
+
+/* Slider container */
+.slider-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+/* Slider track for continuous scrolling */
+.slider-track {
+  display: flex;
+  animation: scroll 20s linear infinite;
+  animation-play-state: running; /* Default: Animation runs */
+}
+
+/* Individual slider item */
+.slider-item {
+  flex-shrink: 0;
+  margin-right: 16px; /* Adjust for spacing */
+}
+
+/* Keyframes for infinite sliding */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Pause animation on hover */
+.slider-wrapper:hover .slider-track {
+  animation-play-state: paused; /* Stop animation on hover */
+}

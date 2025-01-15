@@ -1,46 +1,102 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { solarizedLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import "tailwindcss/tailwind.css";
-import { Avatar, IconButton, Tooltip, TextField, Button } from "@mui/material";
+import { Avatar, IconButton, Tooltip, Button } from "@mui/material";
 import { Comment, Create, Share, ThumbUp } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import CommentsSection from "./commentsModal/CommentsModal";
+import { API_URLS } from "../../data/api-urls";
+import axios from "axios";
+import { useAppSelector } from "../../redux/authCustomHooks";
+import { selectAuth } from "../../redux/slice/authSlice";
+import { useSnackbar } from "../../context/SnackbarContext";
+import SkeletonLoader from "../SkeletonLoading/SkeletonLoad";
 
 const BlogPage = () => {
-  const [htmlContent, setHtmlContent] = useState("");
+  const [blogdetails, setBlogdetails] = useState([]);
   const [openCommentContainer, setOpenCommentContainer] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-
+  const [isLoading, setIsLoading] = useState(false);
+  const { token, userId, role } = useAppSelector(selectAuth);
+  const [commentSectionBlogId, setcommentSectionBlogId] = useState("");
+  const { handleShowSnackbar } = useSnackbar();
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    isVerified: "",
+    profilePhoto: "",
+    occupation: "",
+    joined: "",
+    about: "",
+  });
   const navigate = useNavigate();
 
+  const handleFetchUserData = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}${API_URLS.getUserDetails}/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setIsLoading(false);
+        setUser({
+          name: response.data.userDetails.name,
+          email: response.data.userDetails.email,
+          isVerified: response.data.userDetails.isVerified,
+          profilePhoto: response.data.userDetails.profilePicture,
+          occupation: response.data.userDetails.occupation,
+          joinedDate: response.data.userDetails.createdAt,
+          about: response.data.userDetails.aboutMe,
+        });
+      }
+      console.log(response.data);
+    } catch (error) {
+      handleShowSnackbar(error.response.data.message, "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const dummyData = `
-      <h1 class="text-2xl font-bold mb-4">My Experience Watching "The Grand Adventure"</h1>
-      <p class="mb-4">
-        Watching "The Grand Adventure" was an incredible experience. From the stunning visuals to the emotionally captivating storyline,
-        I found myself fully immersed in the movie. Let me share some highlights.
-      </p>
-      <h2 class="text-xl font-semibold mt-4 mb-2">The Cinematography</h2>
-      <p class="mb-4">
-        The visuals were breathtaking. Every scene was a masterpiece, with perfect lighting, angles, and vibrant colors.
-      </p>
-      <pre><code class="language-javascript">// Favorite scenes from the movie
-const favoriteScenes = ["Opening Sequence", "Climactic Battle", "Heartwarming Ending"];
-favoriteScenes.forEach(scene => console.log(\`Loved: \${scene}\`));
-</code></pre>
-      <h2 class="text-xl font-semibold mt-4 mb-2">The Soundtrack</h2>
-      <p class="mb-4">
-        The music was phenomenal and added depth to every scene. I couldn't help but hum along to the beautiful melodies.
-      </p>
-      <h2 class="text-xl font-semibold mt-4 mb-2">Watch This Clip</h2>
-      <video controls width="100%" class="rounded">
-        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-    `;
-    setHtmlContent(dummyData);
+    handleFetchUserData();
   }, []);
+
+  // Memoize the fetchBlogs function
+  const fetchBlogs = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}${API_URLS.getBlogs}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setIsLoading(false);
+        setBlogdetails(response.data.blogs);
+      }
+    } catch (error) {
+      handleShowSnackbar(
+        error.response?.data?.message || "Error occurred",
+        "error"
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // useEffect with the dependency array
+  useEffect(() => {
+    if (token) fetchBlogs();
+  }, [fetchBlogs, token]);
 
   const renderHtmlContent = (content) => {
     const parser = new DOMParser();
@@ -49,7 +105,6 @@ favoriteScenes.forEach(scene => console.log(\`Loved: \${scene}\`));
     const contentArray = Array.from(htmlDoc.body.childNodes);
     return contentArray.map((node, index) => {
       if (node.nodeName === "PRE") {
-        // Render code blocks
         const codeText = node.querySelector("code").textContent;
         return (
           <SyntaxHighlighter
@@ -61,7 +116,6 @@ favoriteScenes.forEach(scene => console.log(\`Loved: \${scene}\`));
           </SyntaxHighlighter>
         );
       } else if (node.nodeName === "VIDEO") {
-        // Render video elements
         return (
           <video
             key={index}
@@ -73,7 +127,6 @@ favoriteScenes.forEach(scene => console.log(\`Loved: \${scene}\`));
           />
         );
       } else {
-        // Render other HTML content
         return (
           <div
             key={index}
@@ -84,94 +137,134 @@ favoriteScenes.forEach(scene => console.log(\`Loved: \${scene}\`));
     });
   };
 
-  const handleOpenComment = () => {
+  const handleOpenComment = (id) => {
     setOpenCommentContainer(!openCommentContainer);
+    setcommentSectionBlogId(id);
   };
 
   const handleOpenCreateForm = () => {
     navigate("create-blog");
   };
+
   const handleProfileClick = (userId) => {
     navigate(`profile/${userId}`);
   };
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
-
-  const filteredContent = htmlContent
-    .toLowerCase()
-    .includes(searchQuery.toLowerCase())
-    ? htmlContent
-    : "";
-
   return (
     <div className="bg-gray-100 min-h-screen mt-3">
-      {/* Top Bar */}
-      <div className="flex justify-between items-center  p-4 bg-white shadow">
-        <TextField
-          variant="outlined"
-          size="small"
-          placeholder="Search blogs..."
-          className="w-2/3"
-          value={searchQuery}
-          onChange={handleSearchChange}
-        />
-        <Button
-          variant="contained"
-          startIcon={<Create />}
-          onClick={handleOpenCreateForm}
-          className="button ">
-          Write
-        </Button>
+      <div className="flex justify-between items-center p-4 bg-white shadow">
+        <div
+          className="flex w-fit cursor-pointer gap-2 "
+          onClick={() => handleProfileClick(userId)}>
+          <div className="w-[90px] h-[50px] rounded-full overflow-hidden">
+            <img
+              src={
+                token && user.profilePhoto
+                  ? `${import.meta.env.VITE_BASE_URL + "/" + user.profilePhoto}`
+                  : "/images/demo-profile.png"
+              }
+              alt="your profile"
+              className="rounded-full w-full h-full object-cover"
+              height={40}
+            />
+          </div>
+          <div className="w-full">
+            <h5 className="font-bold">{user.name}</h5>
+            <p className="text-gray-500 text-[10px] ">{user.occupation}</p>
+          </div>
+        </div>
+        {token && role === "admin" ? (
+          <Button
+            variant="contained"
+            startIcon={<Create />}
+            onClick={handleOpenCreateForm}
+            className="button">
+            Write
+          </Button>
+        ) : (
+          ""
+        )}
       </div>
 
-      {/* Blog Content */}
-      {filteredContent && (
-        <div className="max-w-4xl mx-auto mt-6 p-6 bg-white rounded shadow">
-          {/* User Profile */}
-          <div className="flex items-center mb-4">
-            <Avatar
-              alt="User Avatar"
-              src="https://via.placeholder.com/150"
-              className="cursor-pointer"
-              onClick={() => handleProfileClick("123")} // Simulate a user ID
-            />
-            <div
-              className="ml-3 cursor-pointer"
-              onClick={() => handleProfileClick("123")}>
-              <p className="text-lg font-semibold">John Doe</p>
-              <p className="text-sm text-gray-600">Posted on October 10, 2024</p>
+      {isLoading ? (
+        <SkeletonLoader variant={"content"} />
+      ) : (
+        blogdetails?.map((item) => (
+          <div
+            key={item._id}
+            className="max-w-4xl mx-auto mt-6 p-6 bg-white rounded shadow">
+            <div className="flex items-center mb-4">
+              <Avatar
+                alt="User Avatar"
+                src={
+                  item?.userId?.profilePicture
+                    ? `${import.meta.env.VITE_BASE_URL}/${
+                        item?.userId?.profilePicture
+                      }`
+                    : "/images/demo-profile.png"
+                }
+                className="cursor-pointer"
+                onClick={() => handleProfileClick(`${item?.userId?._id}`)}
+              />
+              <div
+                className="ml-3 cursor-pointer"
+                onClick={() => handleProfileClick(`${item?.userId?._id}`)}>
+                <p className="text-lg font-semibold">{item?.userId?.name}</p>
+                <p className="text-sm text-gray-600">
+                  Posted on{" "}
+                  {item?.createdAt
+                    ? (() => {
+                        const commentDate = new Date(item?.createdAt);
+                        const currentDate = new Date();
+                        const timeDifference = currentDate - commentDate;
+                        const daysDifference = Math.floor(
+                          timeDifference / (1000 * 60 * 60 * 24)
+                        );
+
+                        if (daysDifference === 0) {
+                          return commentDate.toDateString();
+                        } else if (daysDifference === 1) {
+                          return "1 day ago";
+                        } else if (daysDifference > 1) {
+                          return `${daysDifference} days ago`;
+                        } else {
+                          return commentDate.toDateString();
+                        }
+                      })()
+                    : "Just now"}
+                </p>
+              </div>
             </div>
+
+            <div>{renderHtmlContent(item.content)}</div>
+
+            <div className="flex justify-between items-center mt-6">
+              <Tooltip title="Like">
+                <IconButton>
+                  <ThumbUp />
+                  {item?.likes.length}
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Comment">
+                <IconButton onClick={() => handleOpenComment(`${item?._id}`)}>
+                  <Comment />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Share">
+                <IconButton>
+                  <Share />
+                </IconButton>
+              </Tooltip>
+            </div>
+
+            {openCommentContainer && (
+              <CommentsSection
+                open={openCommentContainer}
+                id={commentSectionBlogId}
+              />
+            )}
           </div>
-
-          {/* Render Blog Body */}
-          <div>{renderHtmlContent(filteredContent)}</div>
-
-          {/* Blog Actions */}
-          <div className="flex justify-between items-center mt-6">
-            <Tooltip title="Like">
-              <IconButton>
-                <ThumbUp />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Comment" onClick={handleOpenComment}>
-              <IconButton>
-                <Comment />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Share">
-              <IconButton>
-                <Share />
-              </IconButton>
-            </Tooltip>
-          </div>
-
-          {/* Comment Section */}
-          {openCommentContainer && (
-            <CommentsSection open={openCommentContainer} />
-          )}
-        </div>
+        ))
       )}
     </div>
   );

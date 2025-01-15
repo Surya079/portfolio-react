@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import {
   CopyrightOutlined,
@@ -6,7 +5,6 @@ import {
   LinkedIn,
   Instagram,
 } from "@mui/icons-material";
-import Divider from "@mui/material/Divider";
 
 const Footer = () => {
   return (
@@ -14,7 +12,8 @@ const Footer = () => {
       <div className="flex gap-2 ">
         <Link
           className="text-white hover:motion-preset-focus-lg hover:text-white"
-          to="https://github.com/Surya079" target="_blank">
+          to="https://github.com/Surya079"
+          target="_blank">
           <GitHub />
         </Link>
         <Link
