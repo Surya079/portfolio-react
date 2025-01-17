@@ -123,7 +123,7 @@ const UserProfilePage = () => {
               alt={user.name}
               src={
                 user.profilePhoto
-                  ? `${import.meta.env.VITE_BASE_URL}/${user.profilePhoto}`
+                  ? `${import.meta.env.VITE_BASE_URL}/${user?.profilePhoto}`
                   : "/images/demo-profile.png"
               }
               sx={{ width: 80, height: 80 }}
