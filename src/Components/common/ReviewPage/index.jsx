@@ -122,7 +122,7 @@ const InfiniteSlider = () => {
                   <img
                     src={
                       review?.userId?.profilePicture
-                        ? `${import.meta.env.VITE_BASE_URL}/${
+                        ? `${import.meta.env.VITE_BASE_URL}/images/${
                             review?.userId?.profilePicture
                           }`
                         : "/images/demo-profile.png"
