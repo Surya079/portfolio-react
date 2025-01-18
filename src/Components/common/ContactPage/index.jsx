@@ -71,16 +71,8 @@ const ContactPage = () => {
       </div>
 
       <div className=" bg-slate-100 relative w-full max-w-lg mx-auto p-6 backdrop-blur-sm rounded-lg shadow-lg">
-        <div
-          className="absolute inset-0 bg-center bg-no-repeat bg-cover blur-[10px] opacity-50"
-          style={{
-            background: 'url("logo.png")',
-            backgroundSize: "70%",
-            backgroundPosition: "center",
-          }}></div>
         <Box
-          component="form"
-          onSubmit={handleSubmit}
+          component="div"
           sx={{
             maxWidth: 600,
             margin: "auto",
@@ -156,7 +148,10 @@ const ContactPage = () => {
             onChange={handleChange}
           />
 
-          <button type="submit"  className="button w-full text-black">
+          <button
+            type="submit"
+            className="button w-full cursor-pointer text-black"
+            onClick={handleSubmit}>
             Submit
           </button>
         </Box>
