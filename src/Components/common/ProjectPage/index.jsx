@@ -5,131 +5,39 @@ import axios from "axios";
 import { API_URLS } from "../../../data/api-urls";
 import { useSnackbar } from "../../../context/SnackbarContext";
 
-// const projects = [
-//   {
-//     id: 1,
-//     name: "Dice Game",
-//     description:
-//       "A simple and interactive game where two players roll dice to determine the winner. The game is built for entertainment and practice in JavaScript functionality.",
-//     techStacks: ["HTML", "CSS", "JavaScript"],
-//     likes: [
-//       { userId: "101", userName: "John Doe" },
-//       { userId: "102", userName: "Jane Smith" },
-//     ],
-//     createdAt: "2024-12-08",
-//     link: "",
-//     image: "/images/dice-game-p-2.jpg", // Replace with your image URL
-//   },
-//   {
-//     id: 2,
-//     name: "Drum Kit",
-//     description:
-//       "An engaging application where users can play drum sounds by clicking buttons or using keyboard keys. Designed to demonstrate event handling in JavaScript.",
-//     techStacks: ["HTML", "CSS", "JavaScript"],
-//     likes: [
-//       { userId: "103", userName: "Mike Brown" },
-//       { userId: "104", userName: "Emily Wilson" },
-//     ],
-//     createdAt: "2024-12-08",
-//     link: "",
-//     image: "/images/drum-kit-p-3.jpg", // Replace with your image URL
-//   },
-//   {
-//     id: 3,
-//     name: "Simon Game",
-//     description:
-//       "A memory game where players need to follow a sequence of colors and sounds that gets progressively longer. It tests and improves concentration skills.",
-//     techStacks: ["HTML", "CSS", "JavaScript"],
-//     likes: [
-//       { userId: "105", userName: "Chris Taylor" },
-//       { userId: "106", userName: "Sophia Anderson" },
-//     ],
-//     createdAt: "2024-12-08",
-//     link: "",
-//     image: "/images/simon-game-p-4.jpg", // Replace with your image URL
-//   },
-//   {
-//     id: 4,
-//     name: "Static Software Company Website",
-//     description:
-//       "A visually appealing static website to showcase the services and portfolio of a software company.",
-//     techStacks: ["HTML", "CSS", "JavaScript"],
-//     likes: [{ userId: "107", userName: "Michael Lee" }],
-//     createdAt: "2024-12-08",
-//     link: "",
-//     image: "/images/software-company-p-5.jpg", // Replace with your image URL
-//   },
-//   {
-//     id: 5,
-//     name: "Hotel Room Booking Website",
-//     description:
-//       "A dynamic website to allow users to book hotel rooms with features like room availability, pricing, and payment gateway.",
-//     techStacks: ["HTML", "CSS", "JavaScript"],
-//     likes: [
-//       { userId: "102", userName: "Jane Smith" },
-//       { userId: "108", userName: "Sarah Johnson" },
-//     ],
-//     createdAt: "2024-12-08",
-//     link: "",
-//     image: "/images/hotel-booking-p-6.jpg", // Replace with your image URL
-//   },
-//   {
-//     id: 6,
-//     name: "E-Commerce React (UI Only)",
-//     description:
-//       "A responsive e-commerce platform UI built using React and Tailwind CSS, designed to provide a seamless shopping experience.",
-//     techStacks: ["React", "HTML", "Tailwind CSS"],
-//     likes: [
-//       { userId: "101", userName: "John Doe" },
-//       { userId: "105", userName: "Chris Taylor" },
-//     ],
-//     createdAt: "2024-12-08",
-//     link: "",
-//     image: "/images/ecomerce-react-p-1.jpg", // Replace with your image URL
-//   },
-//   {
-//     id: 7,
-//     name: "Study Discussion Platform",
-//     description:
-//       "A Django-based platform to facilitate academic discussions and resource sharing among students and educators.",
-//     techStacks: ["Python", "Django", "HTML", "CSS", "JavaScript"],
-//     likes: [
-//       { userId: "103", userName: "Mike Brown" },
-//       { userId: "104", userName: "Emily Wilson" },
-//     ],
-//     createdAt: "2024-12-08",
-//     link: "",
-//     image: "/images/study-buddy.jpg", // Replace with your image URL
-//   },
-//   {
-//     id: 8,
-//     name: "Employee Management System",
-//     description:
-//       "A system to manage employee records, leaves, and performance reviews with an intuitive interface and MongoDB integration.",
-//     techStacks: ["React", "HTML", "Tailwind CSS", "MongoDB", "Express"],
-//     likes: [
-//       { userId: "108", userName: "Sarah Johnson" },
-//       { userId: "109", userName: "Daniel Roberts" },
-//     ],
-//     createdAt: "2024-12-08",
-//     link: "",
-//     image: "/images/ems-p-7.jpg", // Replace with your image URL
-//   },
-//   {
-//     id: 9,
-//     name: "Authentication System",
-//     description:
-//       "A secure authentication system with user registration, login, and token-based authentication using MERN stack.",
-//     techStacks: ["React", "MongoDB", "Express.js", "HTML", "Tailwind CSS"],
-//     likes: [
-//       { userId: "101", userName: "John Doe" },
-//       { userId: "102", userName: "Jane Smith" },
-//     ],
-//     createdAt: "2024-12-08",
-//     link: "",
-//     image: "/images/auth-system.jpg", // Replace with your image URL
-//   },
-// ];
+const projectImages = [
+  {
+    image: "/images/dice-game-p-2.jpg", // Replace with your image URL
+  },
+  {
+    image: "/images/drum-kit-p-3.jpg", // Replace with your image URL
+  },
+  {
+    id: 3,
+
+    image: "/images/simon-game-p-4.jpg", // Replace with your image URL
+  },
+  {
+    image: "/images/software-company-p-5.jpg", // Replace with your image URL
+  },
+  {
+    image: "/images/hotel-booking-p-6.jpg", // Replace with your image URL
+  },
+  {
+    image: "/images/ecomerce-react-p-1.jpg", // Replace with your image URL
+  },
+  {
+    id: 7,
+
+    image: "/images/study-buddy.jpg", // Replace with your image URL
+  },
+  {
+    image: "/images/ems-p-7.jpg", // Replace with your image URL
+  },
+  {
+    image: "/images/auth-system.jpg", // Replace with your image URL
+  },
+];
 
 const ProjectsPage = () => {
   const titles = ["What is project", "Why it's important"];
@@ -302,17 +210,19 @@ const ProjectsPage = () => {
       </span>
       {/* My projects */}
       <div className="flex flex-col items-center p-2 justify-center py-3">
-        {projectDetails?.map((item) => (
-          <ProjectsCard
-            key={item._id}
-            id={item._id}
-            name={item.title}
-            description={item.description}
-            image={item.image}
-            link={item.projectUrl}
-            like={item.likes}
-          />
-        ))}
+        {projectDetails?.map((item) =>
+          projectImages.map((image) => (
+            <ProjectsCard
+              key={item._id}
+              id={item._id}
+              name={item.title}
+              description={item.description}
+              image={image.image}
+              link={item.projectUrl}
+              like={item.likes}
+            />
+          ))
+        )}
       </div>
     </div>
   );

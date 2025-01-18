@@ -72,10 +72,7 @@ export const ProjectsCard = ({ id, name, description, link, image, like }) => {
       className="flex md:flex-row flex-col motion-preset-slide-down border max-w-[600px] bg-slate-800 overflow-hidden shadow-2xl rounded-2xl gap-2 border-black  p-3 text-white m-2 justify-around">
       <div className="flex  justify-start">
         <div className="w-[340px] h-[200px] ">
-          <img
-            src={`${import.meta.env.VITE_BASE_URL}/images/${image}`}
-            className="object-contain w-full h-full"
-          />
+          <img src={`${image}`} className="object-contain w-full h-full" />
         </div>
       </div>
       <div className="flex flex-col  justify-between">
