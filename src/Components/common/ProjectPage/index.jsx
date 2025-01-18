@@ -5,39 +5,7 @@ import axios from "axios";
 import { API_URLS } from "../../../data/api-urls";
 import { useSnackbar } from "../../../context/SnackbarContext";
 
-const projectImages = [
-  {
-    image: "/images/dice-game-p-2.jpg", // Replace with your image URL
-  },
-  {
-    image: "/images/drum-kit-p-3.jpg", // Replace with your image URL
-  },
-  {
-    id: 3,
 
-    image: "/images/simon-game-p-4.jpg", // Replace with your image URL
-  },
-  {
-    image: "/images/software-company-p-5.jpg", // Replace with your image URL
-  },
-  {
-    image: "/images/hotel-booking-p-6.jpg", // Replace with your image URL
-  },
-  {
-    image: "/images/ecomerce-react-p-1.jpg", // Replace with your image URL
-  },
-  {
-    id: 7,
-
-    image: "/images/study-buddy.jpg", // Replace with your image URL
-  },
-  {
-    image: "/images/ems-p-7.jpg", // Replace with your image URL
-  },
-  {
-    image: "/images/auth-system.jpg", // Replace with your image URL
-  },
-];
 
 const ProjectsPage = () => {
   const titles = ["What is project", "Why it's important"];
@@ -127,7 +95,6 @@ const ProjectsPage = () => {
           </span>
         </motion.span>
       </div>
-
       {/* Answers */}
       <div className="grid grid-cols-1 bg-slate-300 py-2 px-4 items-center md:grid-cols-2">
         <div>
@@ -169,9 +136,7 @@ const ProjectsPage = () => {
           </p>
         </div>
       </div>
-
       {/* Title */}
-
       <div className="flex bg-slate-300 flex-col items-center pt-2 justify-center">
         <motion.div
           initial={{
@@ -210,19 +175,17 @@ const ProjectsPage = () => {
       </span>
       {/* My projects */}
       <div className="flex flex-col items-center p-2 justify-center py-3">
-        {projectDetails?.map((item) =>
-          projectImages.map((image) => (
-            <ProjectsCard
-              key={item._id}
-              id={item._id}
-              name={item.title}
-              description={item.description}
-              image={image.image}
-              link={item.projectUrl}
-              like={item.likes}
-            />
-          ))
-        )}
+        {projectDetails?.map((item) => (
+          <ProjectsCard
+            key={item._id}
+            id={item._id}
+            name={item.title}
+            description={item.description}
+            image={item.image}
+            link={item.projectUrl}
+            like={item.likes}
+          />
+        ))}{" "}
       </div>
     </div>
   );
