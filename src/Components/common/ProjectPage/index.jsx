@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ProjectsCard } from "../ProjectsCard";
@@ -185,7 +186,7 @@ const ProjectsPage = () => {
             link={item.projectUrl}
             like={item.likes}
           />
-        ))}{" "}
+        ))}
       </div>
     </div>
   );

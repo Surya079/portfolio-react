@@ -11,7 +11,7 @@ import { AddReviewDialog } from "../../reviewAdd";
 import SkeletonLoader from "../../SkeletonLoading/SkeletonLoad";
 
 const InfiniteSlider = () => {
-  const [reviews, setReviews] = useState([]); // Store fetched reviews
+  const [reviews, setReviews] = useState([]); 
   const { userId, token } = useAppSelector(selectAuth);
   const [isOpen, setisOpne] = useState(false);
   const [isAddOpen, setisAddOpen] = useState(false);
