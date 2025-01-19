@@ -28,7 +28,7 @@ export const TestimonialCard = () => {
         );
         if (response.data) {
           setIsLoading(false);
-          setTestimonials(response.data.testimonials);
+          setTestimonials(response.data?.testimonials);
         }
       } catch (error) {
         if (role === "admin")
@@ -92,7 +92,7 @@ export const TestimonialCard = () => {
         <ArrowLeft className="w-fit p-0 text-cyan-400" />
       </Button>
 
-      {testimonials && testimonials > 0 ? (
+      {testimonials && testimonials?.length > 0 ? (
         testimonials
           ?.slice(currentIndex, currentIndex + cardShow)
           .map((item) => (

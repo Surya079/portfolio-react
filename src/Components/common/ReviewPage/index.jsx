@@ -149,58 +149,6 @@ const InfiniteSlider = () => {
                 <p className="text-sm text-gray-600">{review?.content}</p>
               </div>
             ))}
-
-            {/* Duplicate content for seamless sliding */}
-            {reviews?.map((review, index) => (
-              <div
-                key={`duplicate-${index}`}
-                className="slider-item flex-shrink-0 w-1/3 p-5 bg-white mx-4 rounded-md shadow-lg"
-                style={{ minWidth: "350px" }}>
-                {userId === review?.userId?._id && (
-                  <div className="flex justify-end  gap-3">
-                    <div
-                      onClick={() => handleEdit(review?._id)}
-                      className="cursor-pointer ">
-                      <EditIcon />
-                    </div>
-                    <div
-                      onClick={() => handleDelete(review?._id)}
-                      className="cursor-pointer">
-                      <DeleteIcon />
-                    </div>
-                  </div>
-                )}
-                <div className="flex items-center mb-3">
-                  <img
-                    src={
-                      review?.userId?.profilePicture
-                        ? `${import.meta.env.VITE_BASE_URL}/${
-                            review?.userId?.profilePicture
-                          }`
-                        : "/images/demo-profile.png"
-                    }
-                    alt="profile"
-                    className="w-16 h-16 rounded-full mr-3 object-cover"
-                  />
-                  <div>
-                    <p className="text-lg font-semibold">
-                      {review?.userId?.name}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {review?.userId?.occupation || "Occupation not provided"}
-                    </p>
-                  </div>
-                </div>
-                <span className="text-xs text-gray-400 block mb-2">
-                  {new Date(review?.createdAt).toLocaleDateString()}
-                </span>
-                <div className="stars text-yellow-500 mb-2">
-                  {"★".repeat(review?.rating)}
-                  {"☆".repeat(5 - review?.rating)}
-                </div>
-                <p className="text-sm text-gray-600">{review?.content}</p>
-              </div>
-            ))}
           </div>
         </div>
       ) : (
