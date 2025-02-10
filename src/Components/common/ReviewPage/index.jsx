@@ -9,12 +9,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import EditReviewDialog from "./edit";
 import { AddReviewDialog } from "../../reviewAdd";
 import SkeletonLoader from "../../SkeletonLoading/SkeletonLoad";
+import useMobileView from "../../../customHooks/useMobileView";
 
 const InfiniteSlider = () => {
-  const [reviews, setReviews] = useState([]); 
+  const [reviews, setReviews] = useState([]);
   const { userId, token } = useAppSelector(selectAuth);
   const [isOpen, setisOpne] = useState(false);
   const [isAddOpen, setisAddOpen] = useState(false);
+  const isMobile = useMobileView();
   const [isLoading, setIsLoading] = useState(false);
   const [editReviewData, seteditReviewData] = useState({
     contents: "",
@@ -97,12 +99,16 @@ const InfiniteSlider = () => {
         Your Review Matters to Me
       </h2>
       {reviews && reviews.length > 0 ? (
-        <div className="slider-wrapper overflow-hidden relative w-full mt-10">
-          <div className="slider-track flex">
+        <div className="slider-wrapper  relative w-full mt-10">
+          <div
+            className={
+              `${!isMobile ? "slider-track" : ""} ` +
+              " md:flex snap-x snap-mandatory"
+            }>
             {reviews?.map((review, index) => (
               <div
                 key={index}
-                className="slider-item flex-shrink-0 w-1/3 p-5 bg-white mx-4 rounded-md shadow-lg"
+                className="mb-2 flex-shrink-0 w-1/2 p-5 bg-white mx-4 rounded-md shadow-lg"
                 style={{ minWidth: "350px" }}>
                 {userId === review?.userId?._id && (
                   <div className="flex justify-end gap-3">
