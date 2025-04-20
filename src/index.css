@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: "Poppins", sans-serif;
-}
-
 :root {
   /* Base Colors */
   --white: #ffffff; /* Background or section backgrounds */
@@ -25,6 +21,10 @@ body {
   font-family: "Arial", sans-serif;
   background-color: var(--white); /* Set white as the main background */
   color: var(--dark-gray); /* Set dark gray as default text color */
+  -webkit-user-select: none; /* For safari, chrome */
+  -moz-user-select: none; /*for firebox*/
+  -ms-user-select: none; /*for internet explorer*/
+  user-select: none; /* standard property */
 }
 
 h1,
@@ -212,4 +212,17 @@ code {
 /* Pause animation on hover */
 .slider-wrapper:hover .slider-track {
   animation-play-state: paused; /* Stop animation on hover */
+}
+
+html.screenshot-detected::after {
+  content: " ";
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vw;
+  background-color: rgb(0, 0, 0);
+  opacity: 1;
+  z-index: 9999;
+  pointer-events: none;
 }

@@ -8,8 +8,10 @@ import { selectAuth } from "../redux/slice/authSlice";
 import ReviewSection from "./common/ReviewPage";
 import AddTestimonial from "./AddTestimonila";
 import { useSnackbar } from "../context/SnackbarContext";
+import usePersistScreenshotBlackout from "./DisableScreenShot";
 
 const HomePage = () => {
+  usePersistScreenshotBlackout();
   const titles = ["Surya", "Frontend Developer", "Backend Developer"];
   const [text, setText] = useState("");
   const [index, setIndex] = useState(0);

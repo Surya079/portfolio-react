@@ -9,7 +9,7 @@ const AboutPage = () => {
   const [text, setText] = useState("");
   const [index, setIndex] = useState(0);
 
-  const {token} = useAppSelector(selectAuth)
+  const { token } = useAppSelector(selectAuth);
 
   return (
     <div>
@@ -256,7 +256,31 @@ const AboutPage = () => {
                   <span className="flex text-[10px] items-center flex-col gap-2">
                     Full Stack Intern
                     <span className="text-[7px] text-left">
-                      ( jan 2024 - Present )
+                      ( jan 2024 - mar 2025 )
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            {/* Wipro */}
+            <div className="relative h-[200px] flex">
+              <div className="absolute inset-0 blur-sm bg-[url('/images/Wipro.webp')] md:bg-fixed bg-no-repeat bg-cover z-[-10] opacity-50"></div>
+              <div className="grid grid-cols-2 py-2 px-4 md:grid-cols-2 items-center">
+                <div className="text-[10px]  h-full border-r-[1px] border-black flex items-center font-bold p-4 ">
+                  <p className="text-[7px]  md:text-[11px]">
+                    Currently undergoing training in Microsoft Azure Cloud and
+                    Databricks, focusing on cloud services and data engineering.
+                    I also have hands-on experience in full-stack development
+                    using React, Python, Django, MongoDB, Next.js, Redux,
+                    Node.js and SQL.
+                  </p>
+                </div>
+                <div className="text-[10px] p-5 flex h-full items-center font-bold justify-between gap-2 flex-row">
+                  <Divider className="bg-slate-950 w-[50px] md:w-[350px]" />
+                  <span className="flex text-[10px] items-center flex-col gap-2">
+                    Developer - L1
+                    <span className="text-[7px] text-left">
+                      ( Apr 2025 - Present )
                     </span>
                   </span>
                 </div>

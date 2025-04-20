@@ -30,6 +30,8 @@ export const Layout = ({ children }) => {
     }, 5000); // Closes the popup after 5 seconds
     return () => clearTimeout(timer); // Cleanup timer on unmount
   }, []);
+
+
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
